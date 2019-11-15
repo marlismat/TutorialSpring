@@ -39,4 +39,13 @@ public class TutorialSp {
 		
 		return ResponseEntity.ok().body(ConsultaService.ConsultaType(idProduct,vip));
 	}
+	
+	
+	@GetMapping(path = "/superType/{idProduct}/{vip}")
+	public ResponseEntity<?>  getSuperType(HttpServletRequest request, HttpServletResponse response, 
+			@PathVariable(value="idProduct") String idProduct,@PathVariable(value="vip") String vip) {
+
+		
+		return ResponseEntity.ok().body(ConsultaService.ConsultaSuper(idProduct, vip));
+	}
 }

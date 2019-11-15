@@ -15,14 +15,40 @@ import com.digitel.consultasp.model.Estado;
 import com.digitel.consultasp.model.Estados;
 import com.digitel.consultasp.model.Municipio;
 import com.digitel.consultasp.model.Municipios;
+import com.digitel.consultasp.model.SuperInfo;
 import com.digitel.consultasp.model.UserTypes;
 import com.digitel.servicios.adaptador.JdbcCRMDao;
 import com.digitel.servicios.adaptador.JdbcConfigDao;
+
+import oracle.net.aso.u;
 
 
 
 
 public class ConsultaService {
+	
+	public static  SuperInfo ConsultaSuper(String idProduct,String vip) {
+		UserTypes uT = new UserTypes();
+		Ciudades ciudades = new Ciudades();
+		SuperInfo superInfo = new SuperInfo();
+		try {
+			uT = ConsultaService.ConsultaType(idProduct,vip);
+			ciudades = FindCiudad();
+			superInfo.setCiudades(ciudades);
+			superInfo.setUserType(uT);
+		
+		
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			System.out.println(e);
+			System.out.println(e.getStackTrace().toString());
+		}
+		
+		return superInfo;
+		
+	}
 	
 public static  UserTypes ConsultaType(String idProduct,String vip) {
 	UserTypes uT = new UserTypes();
@@ -58,6 +84,8 @@ System.out.println(resultMap);
 resultMap.get("P_USER_TYPE");
 
 uT.setUserType((String) resultMap.get("P_USER_TYPE"));
+uT.setCode((String) resultMap.get("P_COD_ERROR"));
+uT.setResult((String) resultMap.get("P_COD_RESULT"));
 //new UserTypes(resultMap.get("P_USER_TYPE"), resultMap.get("p_cod_result"), resultMap.get("p_cod_error"));
 	}catch (Exception e) {
 		// TODO: handle exception

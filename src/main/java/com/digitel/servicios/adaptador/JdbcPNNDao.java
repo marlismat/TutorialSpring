@@ -1,0 +1,60 @@
+package com.digitel.servicios.adaptador;
+
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+
+
+@Repository("JdbcConfigPNN")
+@PropertySource("classpath:application.properties")
+public class JdbcPNNDao {
+
+
+	
+	 private static JdbcTemplate jdbcPNNTemplate;
+
+	 @Value( "${pnn.datasource.url}" )
+	 private String url;
+	 @Value( "${pnn.datasource.username}" )
+	 private String username;
+	 @Value( "${pnn.datasource.password}" )
+	 private String password;
+	// @Value( "${spring.datasource.driver-class-name}" )
+	// private String driver;	
+	 @Value( "${pnn.datasource.hikari.connection-timeout}" )
+	 private int timeout;
+	 @Value( "${legacy.datasource.hikari.maximum-pool-size}" )
+	 private int max;
+	
+	@Autowired
+	public void setJdbcTemplate() {
+		System.out.println("Prueba de valores de conexion set y get");
+		System.out.println(url);				
+		System.out.println(username);
+		System.out.println(password);
+	//	System.out.println(driver);	
+		
+		 BasicDataSource dataSource  = new BasicDataSource();	
+		 dataSource.setUrl(url);
+		 dataSource.setUsername(username);
+		 dataSource.setPassword(password);
+	//	 dataSource.setDriverClassName(driver);
+		 dataSource.setDefaultQueryTimeout(timeout);
+		 dataSource.setMaxTotal(max);
+		 JdbcPNNDao.jdbcPNNTemplate = new JdbcTemplate(dataSource);
+		// dataSource.setEnableAutoCommitOnReturn(false);
+		// dataSource.setDefaultAutoCommit(false);
+	}
+
+	
+	public static JdbcTemplate getJdbcTemplate() { // instancia en memoria
+		return jdbcPNNTemplate;
+	}
+
+	 
+}
+

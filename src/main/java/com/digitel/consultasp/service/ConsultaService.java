@@ -13,12 +13,15 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import com.digitel.consultasp.model.Ciudades;
 import com.digitel.consultasp.model.Estado;
 import com.digitel.consultasp.model.Estados;
+import com.digitel.consultasp.model.IMSI;
+import com.digitel.consultasp.model.IMSIS;
 import com.digitel.consultasp.model.Municipio;
 import com.digitel.consultasp.model.Municipios;
 import com.digitel.consultasp.model.SuperInfo;
 import com.digitel.consultasp.model.UserTypes;
 import com.digitel.servicios.adaptador.JdbcCRMDao;
 import com.digitel.servicios.adaptador.JdbcConfigDao;
+import com.digitel.servicios.adaptador.JdbcPNNDao;
 
 import oracle.net.aso.u;
 
@@ -26,6 +29,51 @@ import oracle.net.aso.u;
 
 
 public class ConsultaService {
+	public static  IMSIS FindImsi(String idIMSI){
+		IMSIS imsis = new IMSIS();
+		try {
+			//Llamaar al pool de conexion
+			JdbcTemplate jdbcTemplate =  JdbcPNNDao.getJdbcTemplate();
+			
+			
+			// Senstivo
+			jdbcTemplate.setResultsMapCaseInsensitive(true);
+						
+			SimpleJdbcCall validaImsi;	
+						
+//						funcion para invocar el SP
+			validaImsi = new SimpleJdbcCall(jdbcTemplate.getDataSource()). withSchemaName("pnnprod").
+								withProcedureName("SP_SEARCH_ICCID")
+								.returningResultSet("cv_results", BeanPropertyRowMapper.newInstance(IMSI.class));		
+			
+			SqlParameterSource in = new MapSqlParameterSource()
+			.addValue("p_iccid", idIMSI);
+			
+
+	Map<String, Object> resultMap = validaImsi.execute(in);	
+
+	System.out.println(resultMap); 
+						
+	resultMap.get("cv_results");
+	List <IMSI> list = (List<IMSI>) resultMap.get("cv_results");
+	imsis.setIMSIS(list);
+	imsis.setCodigo((String) resultMap.get("p_code"));
+	imsis.setExecution_code((String) resultMap.get("p_execution_code"));
+	imsis.setMensaje((String) resultMap.get("p_execution_message"));
+	//new UserTypes(resultMap.get("P_USER_TYPE"), resultMap.get("p_cod_result"), resultMap.get("p_cod_error"));
+		
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			System.out.println(e);
+			System.out.println(e.getStackTrace().toString());
+		}
+		
+		
+		return imsis;
+		
+	}
 	
 	public static  SuperInfo ConsultaSuper(String idProduct,String vip) {
 		UserTypes uT = new UserTypes();

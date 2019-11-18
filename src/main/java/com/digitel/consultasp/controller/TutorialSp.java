@@ -48,4 +48,13 @@ public class TutorialSp {
 		
 		return ResponseEntity.ok().body(ConsultaService.ConsultaSuper(idProduct, vip));
 	}
+	
+	
+	@GetMapping(path = "/IMSI/{idIMSI}")
+	public ResponseEntity<?>  getIccid(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable(value="idIMSI") String idIMSI) {	
+		
+		return ResponseEntity.ok().body(ConsultaService.FindImsi(idIMSI));
+	}
+
 }
